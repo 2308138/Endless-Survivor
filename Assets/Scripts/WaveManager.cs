@@ -88,7 +88,7 @@ public class WaveManager : MonoBehaviour
             return;
         }
 
-        spawnRate = Mathf.Max(0.5F, spawnRate - 0.1F);
+        spawnRate = Mathf.Max(0.1F, spawnRate - 0.1F);
         Debug.Log($"Wave {wave} incoming!");
     }
 

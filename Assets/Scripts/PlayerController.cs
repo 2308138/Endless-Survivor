@@ -127,6 +127,6 @@ public class PlayerController : MonoBehaviour
     void Die()
     {
         Debug.Log("Player Died!");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene("GameOver");
     }
 }
