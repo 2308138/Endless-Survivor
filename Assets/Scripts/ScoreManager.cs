@@ -8,7 +8,7 @@ public class ScoreManager : MonoBehaviour
 
     private void Update()
     {
-        scoreText.text = $"Score: {score}";
+        scoreText.text = "Score: " +score;
     }
 
     public void IncreaseScore(int amount)

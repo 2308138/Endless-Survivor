@@ -48,11 +48,7 @@ public class WaveManager : MonoBehaviour
             return;
         }
 
-        if (wave >= 2)
-        {
-            FindObjectOfType<ScoreManager>().IncreaseScore(100);
-            waveText.text = $"Wave: {wave}";
-        }
+        waveText.text = $"Wave: {wave}";
 
         if (tutorialComplete)
         {
@@ -77,6 +73,7 @@ public class WaveManager : MonoBehaviour
 
     void IncreaseWaveDifficulty()
     {
+        FindObjectOfType<ScoreManager>().IncreaseScore(100);
         wave++;
         if (playerController.currentHealth < 3)
         {
