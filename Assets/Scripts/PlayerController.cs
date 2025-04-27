@@ -8,11 +8,17 @@ public class PlayerController : MonoBehaviour
     [Header("--- Movement Settings ---")]
     public float moveSpeed = 5.0F;
     private Rigidbody2D rb;
-    private Vector2 movement;
+    private Vector2 movementInput;
+    public Vector2 lastMoveDirection = Vector2.right;
 
     [Header("--- Slash Settings ---")]
     public GameObject slashPrefab;
+    public GameObject topSlashPrefab;
+    public GameObject bottomSlashPrefab;
     public Transform slashSpawnPoint;
+    public Transform topSlashSpawnPoint;
+    public Transform bottomSlashSpawnPoint;
+    private GameObject attack;
 
     [Header("--- Health Settings ---")]
     public int maxHealth = 3;
@@ -23,6 +29,9 @@ public class PlayerController : MonoBehaviour
     public Color defaultColor = Color.white;
     public Color hitColor = Color.red;
 
+    [Header("--- Combat Settings ---")]
+    public float lungeForce = 2.0F;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -31,8 +40,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
+        HandleMovement();
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
@@ -42,17 +50,53 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + movementInput * moveSpeed * Time.fixedDeltaTime);
+    }
+
+    void HandleMovement()
+    {
+        movementInput = new Vector2 (Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        if (movementInput != Vector2.zero)
+        {
+            movementInput.Normalize();
+            lastMoveDirection = movementInput;
+        }
+
+        rb.linearVelocity = movementInput * moveSpeed;
+
+        if (movementInput.x != 0)
+        {
+            transform.localScale = new Vector3(Mathf.Sign(movementInput.x), 1, 1);
+        }
     }
 
     void PerformSlash()
     {
-        Instantiate(slashPrefab, slashSpawnPoint.position, transform.rotation);
+        rb.linearVelocity = Vector2.zero;
+        rb.linearVelocity += lastMoveDirection * lungeForce;
+        
+        if (lastMoveDirection.x != 0)
+        {
+            attack = Instantiate(slashPrefab, slashSpawnPoint.position, Quaternion.identity);
+        }
+
+        else if (lastMoveDirection.y > 0)
+        {
+            attack = Instantiate(topSlashPrefab, topSlashSpawnPoint.position, Quaternion.identity);
+        }
+        else if (lastMoveDirection.y < 0)
+        {
+            attack = Instantiate(bottomSlashPrefab, bottomSlashSpawnPoint.position, Quaternion.identity);
+        }
+        CameraShake.instance.Shake(0.1F, 0.1F);
+        attack.transform.right = lastMoveDirection;
     }
 
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        CameraShake.instance.Shake(0.2F, 0.2F);
         ChangeColor(hitColor);
         Debug.Log($"Player Health: {currentHealth}");
 
