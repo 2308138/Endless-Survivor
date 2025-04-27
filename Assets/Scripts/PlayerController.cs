@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem.XR.Haptics;
 using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
