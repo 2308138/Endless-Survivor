@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.XR;
 using System.Collections;
 using NUnit.Framework;
+using UnityEngine.SceneManagement;
 
 public class WaveManager : MonoBehaviour
 {
@@ -62,6 +63,11 @@ public class WaveManager : MonoBehaviour
             {
                 IncreaseWaveDifficulty();
             }
+        }
+
+        if (wave == 16)
+        {
+            SceneManager.LoadScene("GameComplete", LoadSceneMode.Single);
         }
     }
 
