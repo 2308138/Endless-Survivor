@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,9 +12,14 @@ public class PlayerController : MonoBehaviour
     public GameObject slashPrefab;
     public Transform slashSpawnPoint;
 
+    [Header("--- Health Settings ---")]
+    public int maxHealth = 3;
+    private int currentHealth;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        currentHealth = maxHealth;
     }
 
     private void Update()
@@ -35,5 +41,22 @@ public class PlayerController : MonoBehaviour
     void PerformSlash()
     {
         Instantiate(slashPrefab, slashSpawnPoint.position, transform.rotation);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        Debug.Log($"Player Health: {currentHealth}");
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Debug.Log("Player Died!");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

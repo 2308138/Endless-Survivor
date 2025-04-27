@@ -21,4 +21,13 @@ public class EnemyController : MonoBehaviour
             transform.position += (Vector3)direction * moveSpeed * Time.deltaTime;
         }
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<PlayerController>().TakeDamage(1);
+            Destroy(gameObject);
+        }
+    }
 }

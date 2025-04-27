@@ -14,6 +14,7 @@ public class SlashAttack : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             Destroy(other.gameObject);
+            Debug.Log("Enemy Killed!");
         }
     }
 }
