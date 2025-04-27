@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
     void Die()
     {
         Debug.Log("Player Died!");
+        FindObjectOfType<ScoreManager>().IncreaseScore(5);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
