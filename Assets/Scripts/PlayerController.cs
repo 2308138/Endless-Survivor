@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("--- Health Settings ---")]
     public int maxHealth = 3;
-    private int currentHealth;
+    public int currentHealth = 0;
 
     private void Start()
     {
