@@ -8,6 +8,7 @@ public class WaveManager : MonoBehaviour
 
     private void Update()
     {
+        FindObjectOfType<ScoreManager>().IncreaseScore(100);
         waveText.text = $"Wave: {enemySpawner.wave}";
     }
 }
