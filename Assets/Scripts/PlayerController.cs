@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 movementInput;
     private Vector2 lastMoveDirection = Vector2.right;
+    private bool canMove = true;
 
     [Header("--- Slash Settings ---")]
     public GameObject slashPrefab;
@@ -34,6 +35,12 @@ public class PlayerController : MonoBehaviour
     [Header("--- Combat Settings ---")]
     public float lungeForce = 2.0F;
 
+    [Header("--- Effect Settings ---")]
+    public GameObject footstepEffectPrefab;
+    public Transform footTransform;
+    public float stepInterval = 0.5F;
+    private float stepTimer = 0.0F;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -42,7 +49,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        HandleMovement();
+        if (canMove)
+        {
+            HandleMovement();
+            HandleEffects();
+        }
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
@@ -70,6 +81,41 @@ public class PlayerController : MonoBehaviour
         {
             transform.localScale = new Vector3(Mathf.Sign(movementInput.x), 1, 1);
         }
+
+        HandleEffects();
+    }
+
+    void HandleEffects()
+    {
+        stepTimer -= Time.deltaTime;
+
+        if (stepTimer <= 0F && movementInput.x > 0 || movementInput.x < 0 || movementInput.y > 0 || movementInput.y < 0)
+        {
+            CreateFootstepEffect();
+            stepTimer = stepInterval;
+        }
+    }
+
+    void CreateFootstepEffect()
+    {
+        GameObject footstep = Instantiate(footstepEffectPrefab, footTransform.position, Quaternion.identity);
+        StartCoroutine(DestroyFootstepEffect(footstep));
+    }
+
+    IEnumerator DestroyFootstepEffect(GameObject footstep)
+    {
+        ParticleSystem particleSystem = footstep.GetComponent<ParticleSystem>();
+
+        if (particleSystem != null)
+        {
+            yield return new WaitForSeconds(particleSystem.main.duration);
+        }
+        else
+        {
+            yield return new WaitForSeconds(1.0F);
+        }
+
+        Destroy(footstep);
     }
 
     void PerformSlash()

@@ -1911,6 +1911,9 @@ MonoBehaviour:
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   lungeForce: 2
+  footstepEffectPrefab: {fileID: 0}
+  footTransform: {fileID: 0}
+  stepInterval: 0.5
 --- !u!50 &735656595
 Rigidbody2D:
   serializedVersion: 5
