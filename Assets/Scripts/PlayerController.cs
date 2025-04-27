@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.XR.Haptics;
 using UnityEngine.SceneManagement;
@@ -9,16 +10,17 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5.0F;
     private Rigidbody2D rb;
     private Vector2 movementInput;
-    public Vector2 lastMoveDirection = Vector2.right;
+    private Vector2 lastMoveDirection = Vector2.right;
 
     [Header("--- Slash Settings ---")]
     public GameObject slashPrefab;
-    public GameObject topSlashPrefab;
-    public GameObject bottomSlashPrefab;
-    public Transform slashSpawnPoint;
-    public Transform topSlashSpawnPoint;
-    public Transform bottomSlashSpawnPoint;
+    public GameObject upSlashPrefab;
+    public GameObject downSlashPrefab;
+    public GameObject leftSlashPrefab;
     private GameObject attack;
+    public Transform rightSpawnPoint;
+    public Transform upSpawnPoint;
+    public Transform downSpawnPoint;
 
     [Header("--- Health Settings ---")]
     public int maxHealth = 3;
@@ -59,8 +61,7 @@ public class PlayerController : MonoBehaviour
 
         if (movementInput != Vector2.zero)
         {
-            movementInput.Normalize();
-            lastMoveDirection = movementInput;
+            lastMoveDirection = movementInput.normalized;
         }
 
         rb.linearVelocity = movementInput * moveSpeed;
@@ -74,23 +75,28 @@ public class PlayerController : MonoBehaviour
     void PerformSlash()
     {
         rb.linearVelocity = Vector2.zero;
-        rb.linearVelocity += lastMoveDirection * lungeForce;
-        
-        if (lastMoveDirection.x != 0)
-        {
-            attack = Instantiate(slashPrefab, slashSpawnPoint.position, Quaternion.identity);
-        }
+        attack = null;
 
+        if (lastMoveDirection.x > 0)
+        {
+            attack = Instantiate(slashPrefab, rightSpawnPoint.position, Quaternion.identity);
+        }
+        else if (lastMoveDirection.x < 0)
+        {
+            attack = Instantiate(leftSlashPrefab, rightSpawnPoint.position, Quaternion.identity);
+        }
         else if (lastMoveDirection.y > 0)
         {
-            attack = Instantiate(topSlashPrefab, topSlashSpawnPoint.position, Quaternion.identity);
+            attack = Instantiate(upSlashPrefab, upSpawnPoint.position, Quaternion.identity);
         }
         else if (lastMoveDirection.y < 0)
         {
-            attack = Instantiate(bottomSlashPrefab, bottomSlashSpawnPoint.position, Quaternion.identity);
+            attack = Instantiate(downSlashPrefab, downSpawnPoint.position, Quaternion.identity);
         }
-        CameraShake.instance.Shake(0.1F, 0.1F);
+
         attack.transform.right = lastMoveDirection;
+
+        CameraShake.instance.Shake(0.1F, 0.1F);
     }
 
     public void TakeDamage(int damage)
