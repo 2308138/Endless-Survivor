@@ -23,7 +23,6 @@ public class WaveManager : MonoBehaviour
     public Image attackImage;
     public GameObject tutorialPanel;
     private bool moved = false;
-    private bool dashed = false;
     private bool attacked = false;
     public bool tutorialComplete = false;
     private float inactiveAlpha = 0.5F;
@@ -49,7 +48,7 @@ public class WaveManager : MonoBehaviour
             return;
         }
 
-        if (wave > 0)
+        if (wave >= 2)
         {
             FindObjectOfType<ScoreManager>().IncreaseScore(100);
             waveText.text = $"Wave: {wave}";
@@ -106,16 +105,9 @@ public class WaveManager : MonoBehaviour
             Debug.Log("Attacked!");
         }
 
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            dashed = true;
-            Debug.Log("Dashed!");
-        }
-
         UpdateTutorialVisuals();
 
-        if (moved && attacked && dashed)
+        if (moved && attacked)
         {
             CompleteTutorial();
         }
@@ -124,7 +116,6 @@ public class WaveManager : MonoBehaviour
     void UpdateTutorialVisuals()
     {
         SetAlpha(moveImage, moved ? activeAlpha : inactiveAlpha);
-        SetAlpha(dashImage, dashed ? activeAlpha : inactiveAlpha);
         SetAlpha(attackImage, attacked ? activeAlpha : inactiveAlpha);
     }
 
