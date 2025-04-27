@@ -5,10 +5,10 @@ public class EnemySpawner : MonoBehaviour
     [Header("--- Spawner Settings ---")]
     public GameObject enemyPrefab;
     public float spawnRate = 2.0F;
-    public float spawnRadius = 8.0F;
     private float nextSpawnTime = 0F;
-    public int wave = 1;
+    public int wave = 0;
     public float waveInterval = 10.0F;
+    public Transform[] spawnPoints;
 
     private void Update()
     {
@@ -26,8 +26,9 @@ public class EnemySpawner : MonoBehaviour
 
     void SpawnEnemy()
     {
-        Vector2 spawnPosition = (Vector2)transform.position + Random.insideUnitCircle.normalized * spawnRadius;
-        Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+        int randomIndex = Random.Range(0, spawnPoints.Length);
+        
+        GameObject enemy = Instantiate(enemyPrefab, spawnPoints[randomIndex].position, Quaternion.identity);
     }
 
     void IncreaseWaveDifficulty()
