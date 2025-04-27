@@ -9,6 +9,7 @@ public class EnemySpawner : MonoBehaviour
     public int wave = 0;
     public float waveInterval = 10.0F;
     public Transform[] spawnPoints;
+    public PlayerController playerController;
 
     private void Update()
     {
@@ -34,7 +35,15 @@ public class EnemySpawner : MonoBehaviour
     void IncreaseWaveDifficulty()
     {
         wave++;
-        spawnRate = Mathf.Max(0.5F, spawnRate - 0.1F);
+        if (playerController.currentHealth < 3)
+        {
+            playerController.currentHealth++;
+        }
+        else
+        {
+            return;
+        }
+            spawnRate = Mathf.Max(0.5F, spawnRate - 0.1F);
         Debug.Log($"Wave {wave} incoming!");
     }
 }
